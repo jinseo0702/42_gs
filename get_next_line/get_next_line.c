@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/22 21:50:09 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/23 02:00:24 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ ssize_t	ft_read_file(int fd, char **backup)
 	char	*buf;
 	ssize_t	read_len;
 
+	read_len = 0;
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (0);
@@ -78,6 +79,7 @@ char	*get_next_line(int fd)
 	char		*gnl;
 	ssize_t		re_frf;
 
+	re_frf = 0;
 	if ((fd < 0 && fd > 1023) || BUFFER_SIZE <= 0)
 		return (NULL);
 	re_frf = ft_read_file(fd, &backup);
