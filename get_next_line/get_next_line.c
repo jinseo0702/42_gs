@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/21 10:39:31 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/22 21:50:09 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	*ft_get_head(char **backup)
 	int		i;
 
 	i = ft_new_line(*backup);
+	if (i == 1 && *backup[0] == '\n')
+		i -= 1;
 	gnl = ft_gnl_strdup(backup, i + 1);
 	*backup = ft_gnl_substr(backup, i + 1);
 	if (**backup == 0)
