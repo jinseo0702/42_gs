@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/23 02:00:24 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/23 16:37:55 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ ssize_t	ft_read_file(int fd, char **backup)
 		return (0);
 	if (*backup == NULL)
 	{
-		read_len = read(fd, buf, BUFFER_SIZE);
-		buf[read_len] = '\0';
+		read_len = ft_read_sub(fd, buf);
 		*backup = ft_gnl_strdup(&buf, ft_gnl_strlen(buf));
 		if (read_len <= 0 && **backup == 0)
 		{
@@ -65,12 +64,21 @@ ssize_t	ft_read_file(int fd, char **backup)
 	}
 	while (!ft_new_line(*backup))
 	{
-		read_len = read(fd, buf, BUFFER_SIZE);
-		buf[read_len] = '\0';
+		read_len = ft_read_sub(fd, buf);
 		*backup = ft_gnl_strjoin(backup, buf);
 	}
 	free_backup(&buf);
 	return (read_len);
+}
+
+ssize_t	ft_read_sub(int fd, char *buf)
+{
+	ssize_t	read_len_sub;
+
+	read_len_sub = 0;
+	read_len_sub = read(fd, buf, BUFFER_SIZE);
+	buf[read_len_sub] = '\0';
+	return (read_len_sub);
 }
 
 char	*get_next_line(int fd)
