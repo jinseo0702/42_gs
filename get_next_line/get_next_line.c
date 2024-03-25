@@ -6,19 +6,21 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/23 16:37:55 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/25 11:11:06 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_get_head(char **backup)
+char	*ft_get_head(char **backup, ssize_t re_frf)
 {
 	char	*gnl;
 	int		i;
 
-	i = ft_new_line(*backup);
+	i = ft_new_line(*backup, re_frf);
 	if (i == 1 && *backup[0] == '\n')
+		i -= 1;
+	else if (i == 1 && re_frf == 0 && *backup[0] != '\n')
 		i -= 1;
 	gnl = ft_gnl_strdup(backup, i + 1);
 	*backup = ft_gnl_substr(backup, i + 1);
@@ -27,17 +29,19 @@ char	*ft_get_head(char **backup)
 	return (gnl);
 }
 
-size_t	ft_new_line(const char *str)
+ssize_t	ft_new_line(const char *str, ssize_t read_len)
 {
-	size_t	len;
+	ssize_t	len;
 
 	len = 0;
 	if (str[len] == '\n')
 		return (1);
 	while (str[len] != '\n')
 	{
-		if (str[len] == '\0')
+		if (str[len] == '\0' && read_len != 0)
 			return (0);
+		else if (str[len] == '\0' && read_len == 0)
+			return (len);
 		len++;
 	}
 	return (len);
@@ -62,7 +66,7 @@ ssize_t	ft_read_file(int fd, char **backup)
 			return (read_len);
 		}
 	}
-	while (!ft_new_line(*backup))
+	while (!ft_new_line(*backup, read_len))
 	{
 		read_len = ft_read_sub(fd, buf);
 		*backup = ft_gnl_strjoin(backup, buf);
@@ -96,6 +100,21 @@ char	*get_next_line(int fd)
 		free_backup(&backup);
 		return (NULL);
 	}
-	gnl = ft_get_head(&backup);
+	gnl = ft_get_head(&backup, re_frf);
 	return (gnl);
 }
+/*
+#include <stdio.h>
+#include <fcntl.h>
+int main()
+{
+	int fd = open("test.txt", O_RDONLY);
+	 char *a;
+	while ((a = get_next_line(fd)))
+	{
+		printf("%s", a);
+		free (a);
+		a = NULL;
+	}
+	return (0);
+}*/

@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 18:23:48 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/23 16:56:06 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/24 21:27:02 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 # endif
 
 char	*get_next_line(int fd);
-char	*ft_get_head(char **backup);
-size_t	ft_new_line(const char *str);
+char	*ft_get_head(char **backup, ssize_t re_frf);
+ssize_t	ft_new_line(const char *str, ssize_t read_len);
 ssize_t	ft_read_file(int fd, char **backup);
 ssize_t	ft_read_sub(int fd, char *buf);
 char	*ft_gnl_substr(char **backup, unsigned int start);

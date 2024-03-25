@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:07:19 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/22 20:42:51 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/25 11:09:16 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ ssize_t	ft_gnl_strlen(const char *str)
 	size_t	len;
 
 	len = 0;
-	while (str[len])
+	while (str[len] != '\0')
 		len++;
 	return (len);
 }
@@ -64,7 +64,7 @@ char	*ft_gnl_strdup(char **backup, ssize_t len)
 	ssize_t	i;
 
 	i = 0;
-	dest = (char *)malloc((sizeof(char) * (ft_gnl_strlen(*backup)) + 1));
+	dest = (char *)malloc((sizeof(char) * (ft_gnl_strlen(*backup)) + 2));
 	if (!dest)
 		return (NULL);
 	while ((*backup)[i] != '\0' && i < len)
@@ -82,7 +82,14 @@ char	*ft_gnl_substr(char **backup, unsigned int start)
 	size_t	len;
 	size_t	init_len;
 
-	len = ft_gnl_strlen(*backup + start);
+	if (ft_gnl_strlen(*backup) < start)
+	{
+		str = (char *)malloc(sizeof(char) * 2);
+		free_backup(backup);
+		str[0] = '\0';
+		return (str);
+	}
+	len = ft_gnl_strlen((*backup) + start);
 	init_len = 0;
 	str = (char *)malloc(sizeof(char) * (len + 1));
 	if (!str)
