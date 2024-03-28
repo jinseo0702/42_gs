@@ -1,0 +1,70 @@
+Conditional jump or move depends on uninitialised value(s)
+Conditional jump or move depends on uninitialised value(s)
+Conditional jump or move depends on uninitialised value(s)
+같은 문제가 발생하고있다.
+조건부 점프 또는 이동은 초기화되지 않은 값에 따라 달라집니다.
+이문제에 대해 10분 동안 검색을 하겠다.
+10분을 더 검색 하겠습니다.
+10분을 더 검색 하겠습니다. 
+1. 초기화 되지 않은 값에 의존해서 조건 분기나 mov를 함.
+-초기화 되지 않은 변수를 읽어들였음
+변수가 초기화 없이 사용되는 경우, 경우에 따라 문제가 되지 않을 수도 있지만
+초기화 하지 않은 변수로 배열을 접근할 경우 발생할 수 있다.
+문제를 알게 되었다. 문제는 malloc을 하고 아무것도 넣지 않은 상태에서 본다면 에러가 나게되는거다. 이제 문제를 고치자
+15분 동안 문제를 고칠수 있도록 판단 하자~
+
+예상 가는 문제는 buf에 아무것도 없을때 이런 에러가 나는것에 의심이 간다.
+buf에 아무것도 없어도 backup에는 무엇인가 할당이 된다. 이게 문제가 될것같다
+지금부터 코드 전체를 보도록 하자
+1. read함수에 읽을게 없는경우 어떻게 되는지 확인을 해보자
+
+==39== Conditional jump or move depends on uninitialised value(s)
+==39==    at 0x407E1B: ft_gnl_strlen (get_next_line_utils.c:56)
+==39==    by 0x407B52: ft_read_file (get_next_line.c:64)
+==39==    by 0x407C7A: get_next_line (get_next_line.c:100)
+==39==    by 0x402D66: gnl(int, char const*) (gnl.cpp:20)
+==39==    by 0x404EE6: main (mandatory.cpp:25)
+==39==
+==39== Conditional jump or move depends on uninitialised value(s)
+==39==    at 0x407E1B: ft_gnl_strlen (get_next_line_utils.c:56)
+==39==    by 0x407E49: ft_gnl_strdup (get_next_line_utils.c:67)
+==39==    by 0x407B64: ft_read_file (get_next_line.c:64)
+==39==    by 0x407C7A: get_next_line (get_next_line.c:100)
+==39==    by 0x402D66: gnl(int, char const*) (gnl.cpp:20)
+==39==    by 0x404EE6: main (mandatory.cpp:25)
+==39==
+==39== Conditional jump or move depends on uninitialised value(s)
+==39==    at 0x407E9E: ft_gnl_strdup (get_next_line_utils.c:70)
+==39==    by 0x407B64: ft_read_file (get_next_line.c:64)
+==39==    by 0x407C7A: get_next_line (get_next_line.c:100)
+==39==    by 0x402D66: gnl(int, char const*) (gnl.cpp:20)
+==39==    by 0x404EE6: main (mandatory.cpp:25)
+
+일단 이 문제 발견점은 해결이 됬다.
+해결방법은 문제는 read가 읽을게 없을때도 buf가 초기화 되지않아서 문제가 발생했다.
+고치기 전
+ssize_t	ft_read_sub(int fd, char *buf)
+{
+	ssize_t	read_len_sub;
+
+	read_len_sub = 0;
+	while (++i < BUFFER_SIZE + 1)
+		buf[i] = 0;
+	buf[read_len_sub] = '\0';
+	read_len_sub = read(fd, buf, BUFFER_SIZE);
+	return (read_len_sub);
+}
+이때 문제가 발생하는 이유는 read의 값이 이상한 값이 들어왔을때 buf를 0으로 초기화 하지않는다.
+그문제를 방지 하기위해 buf가 동적할당되는 만큼 0을 넣어줬다.
+ssize_t	ft_read_sub(int fd, char *buf)
+{
+	ssize_t	read_len_sub;
+	ssize_t i;
+
+	i = -1;
+	read_len_sub = 0;
+	while (++i < BUFFER_SIZE + 1)
+		buf[i] = 0;
+	read_len_sub = read(fd, buf, BUFFER_SIZE);
+	return (read_len_sub);
+}

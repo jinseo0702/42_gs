@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/25 12:50:34 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/27 20:40:25 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ ssize_t	ft_new_line(const char *str, ssize_t read_len)
 	len = 0;
 	if (str[len] == '\n')
 		return (1);
+	if (*str && read_len != 0)
+		return (0);
 	while (str[len] != '\n')
 	{
 		if (str[len] == '\0' && read_len != 0)
@@ -66,7 +68,7 @@ ssize_t	ft_read_file(int fd, char **backup)
 			return (read_len);
 		}
 	}
-	while (!ft_new_line(*backup, read_len) || read_len)
+	while (!ft_new_line(*backup, read_len))
 	{
 		read_len = ft_read_sub(fd, buf);
 		*backup = ft_gnl_strjoin(backup, buf);
@@ -78,10 +80,13 @@ ssize_t	ft_read_file(int fd, char **backup)
 ssize_t	ft_read_sub(int fd, char *buf)
 {
 	ssize_t	read_len_sub;
+	ssize_t	i;
 
+	i = -1;
 	read_len_sub = 0;
+	while (++i < BUFFER_SIZE + 1)
+		buf[i] = 0;
 	read_len_sub = read(fd, buf, BUFFER_SIZE);
-	buf[read_len_sub] = '\0';
 	return (read_len_sub);
 }
 
@@ -92,9 +97,14 @@ char	*get_next_line(int fd)
 	ssize_t		re_frf;
 
 	re_frf = 0;
-	if ((fd < 0 && fd > 1023) || BUFFER_SIZE <= 0)
+	if ((fd < 0 || fd > 1023) || BUFFER_SIZE <= 0)
 		return (NULL);
 	re_frf = ft_read_file(fd, &backup[fd]);
+	if (read(fd, backup[fd], 0) == -1)
+	{
+		free_backup(&backup[fd]);
+		return (NULL);
+	}
 	if (re_frf <= 0 && *backup[fd] == 0)
 	{
 		free_backup(&backup[fd]);
@@ -102,47 +112,4 @@ char	*get_next_line(int fd)
 	}
 	gnl = ft_get_head(&backup[fd], re_frf);
 	return (gnl);
-}
-
-#include <stdio.h>
-#include <fcntl.h>
-int main()
-{
-	int fd = open("test1.txt", O_RDONLY);
-	int fd1 = open("test2.txt", O_RDONLY);
-	int fd2 = open("test3.txt", O_RDONLY);
-	char *a;
-	char *b;
-	char *c;
-	while (1)
-	{
-		a = get_next_line(fd);
-		b = get_next_line(fd1);
-		c = get_next_line(fd2);
-		if (a == NULL)
-		{
-			free(a);
-			a = NULL;
-		}
-		if (b == NULL)
-		{
-			free(b);
-			b = NULL;
-		}
-		if (c == NULL)
-		{
-			free(c);
-			c = NULL;
-		}
-		if (a)
-			printf("%s", a);
-		if (b)
-			printf("%s", b);
-		if (c)
-			printf("%s", c);
-		if (a == NULL && b == NULL && c == NULL)
-			break;
-	}
-	printf("\npt all \n"); 
-	return (0);
 }

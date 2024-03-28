@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 15:07:19 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/25 11:09:16 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/25 11:28:33 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*ft_gnl_strjoin(char **backup, const char *buf)
 
 ssize_t	ft_gnl_strlen(const char *str)
 {
-	size_t	len;
+	ssize_t	len;
 
 	len = 0;
 	while (str[len] != '\0')
@@ -64,7 +64,7 @@ char	*ft_gnl_strdup(char **backup, ssize_t len)
 	ssize_t	i;
 
 	i = 0;
-	dest = (char *)malloc((sizeof(char) * (ft_gnl_strlen(*backup)) + 2));
+	dest = (char *)malloc((sizeof(char) * (ft_gnl_strlen(*backup) + 2)));
 	if (!dest)
 		return (NULL);
 	while ((*backup)[i] != '\0' && i < len)

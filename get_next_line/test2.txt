@@ -1,3 +1,0 @@
-it is test2 file
-line2 test2 file
-line3 test2 file

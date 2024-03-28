@@ -6,7 +6,7 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/25 11:11:06 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/27 20:42:07 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ ssize_t	ft_new_line(const char *str, ssize_t read_len)
 	len = 0;
 	if (str[len] == '\n')
 		return (1);
+	if (*str && read_len != 0)
+		return (0);
 	while (str[len] != '\n')
 	{
 		if (str[len] == '\0' && read_len != 0)
@@ -78,10 +80,13 @@ ssize_t	ft_read_file(int fd, char **backup)
 ssize_t	ft_read_sub(int fd, char *buf)
 {
 	ssize_t	read_len_sub;
+	ssize_t	i;
 
+	i = -1;
 	read_len_sub = 0;
+	while (++i < BUFFER_SIZE + 1)
+		buf[i] = 0;
 	read_len_sub = read(fd, buf, BUFFER_SIZE);
-	buf[read_len_sub] = '\0';
 	return (read_len_sub);
 }
 
@@ -92,9 +97,14 @@ char	*get_next_line(int fd)
 	ssize_t		re_frf;
 
 	re_frf = 0;
-	if ((fd < 0 && fd > 1023) || BUFFER_SIZE <= 0)
+	if ((fd < 0 || fd > 1023) || BUFFER_SIZE <= 0)
 		return (NULL);
 	re_frf = ft_read_file(fd, &backup);
+	if (read(fd, backup, 0) == -1)
+	{
+		free_backup(&backup);
+		return (NULL);
+	}
 	if (re_frf <= 0 && *backup == 0)
 	{
 		free_backup(&backup);
@@ -103,18 +113,31 @@ char	*get_next_line(int fd)
 	gnl = ft_get_head(&backup, re_frf);
 	return (gnl);
 }
-/*
+
 #include <stdio.h>
 #include <fcntl.h>
 int main()
 {
-	int fd = open("test.txt", O_RDONLY);
-	 char *a;
+	 int fd = open("test.txt", O_RDONLY);
+	char *a;
 	while ((a = get_next_line(fd)))
 	{
 		printf("%s", a);
 		free (a);
 		a = NULL;
 	}
+	//  char *a = get_next_line(-1);
+	//  printf("%s", a);
+	//  free(a);
+//	 char *b = get_next_line(fd);
+//	 printf("%s", b);
+//	 free(b);
+	// printf("%s", get_next_line(fd));
+	// close(fd);
+	// printf("%s", get_next_line(fd));
+	// char c = 0;
+	// read(fd, &c, 1);
+	// printf("%s", back);
+	// printf("%s", get_next_line(fd));
 	return (0);
-}*/
+}
