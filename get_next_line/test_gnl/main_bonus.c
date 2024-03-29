@@ -21,11 +21,11 @@ int main()
 			printf("%s\n", b);
 		if (c != 0)
 			printf("%s\n", c);
-		if (!a)
+		if (a)
 			free(a);
-		if (!b)
+		if (b)
 			free(b);
-		if (!c)
+		if (c)
 			free(c);
 		a = get_next_line(fd1);
 		b = get_next_line(fd2);
