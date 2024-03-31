@@ -6,11 +6,11 @@
 /*   By: jinseo <jinseo@student.42gyeongsan.kr      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 21:36:12 by jinseo            #+#    #+#             */
-/*   Updated: 2024/03/27 20:40:25 by jinseo           ###   ########.fr       */
+/*   Updated: 2024/03/28 15:59:44 by jinseo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_get_head(char **backup, ssize_t re_frf)
 {
@@ -36,8 +36,6 @@ ssize_t	ft_new_line(const char *str, ssize_t read_len)
 	len = 0;
 	if (str[len] == '\n')
 		return (1);
-	if (*str && read_len != 0)
-		return (0);
 	while (str[len] != '\n')
 	{
 		if (str[len] == '\0' && read_len != 0)
