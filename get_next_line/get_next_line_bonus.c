@@ -58,20 +58,20 @@ ssize_t	ft_read_file(int fd, char **backup)
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (0);
-	if (*backup == NULL)
+	while (1)
 	{
-		read_len = ft_read_sub(fd, buf);
-		*backup = ft_gnl_strdup(&buf, ft_gnl_strlen(buf));
-		if (read_len <= 0 && **backup == 0)
+		if (*backup == NULL)
 		{
-			free_backup(&buf);
-			return (read_len);
+			read_len = ft_read_sub(fd, buf);
+			*backup = ft_gnl_strdup(&buf, ft_gnl_strlen(buf));
+			if (ft_new_line(*backup, read_len) || \
+			(read_len <= 0 && **backup == 0))
+				break ;
 		}
-	}
-	while (!ft_new_line(*backup, read_len))
-	{
 		read_len = ft_read_sub(fd, buf);
 		*backup = ft_gnl_strjoin(backup, buf);
+		if (ft_new_line(*backup, read_len))
+			break ;
 	}
 	free_backup(&buf);
 	return (read_len);
