@@ -1,0 +1,7 @@
+지금 내 gnl의경우 다읽어 버린다. 결국 null이 있어도 읽어버리기 때문에 문제가 생긴다.
+"a\n-fdsafsfsd" 의 경우 내 strdup에서 i < len
+i == 0; len은 1이 되서 a만 복사하게 된다.
+ft_get_head 의 문제 부분
+else if (i == 1 && re_frf == 0 && *backup[0] != '\n')
+		i -= 1;
+다 읽었는데 "a\0"경우 를 말한다. 이때 i가 2가된다면 malloc한 것보다 크게 보게 된다.
